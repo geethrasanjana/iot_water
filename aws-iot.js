@@ -6,7 +6,7 @@ AWS.config.credentials = new AWS.CognitoIdentityCredentials({
 
 // Create an IoT Data client
 const iotData = new AWS.IotData({
-    endpoint: 'a2kcj74481fo95-ats.iot.us-east-1.amazonaws.com', //  endpoint
+    endpoint: 'a2kcj74481fo95-ats.iot.us-east-1.amazonaws.com', //  IOT endpoint eka
     service: 'iotdata' // IoT Data
 });
 
@@ -62,5 +62,5 @@ function fetchDataFromAWSIoT() {
     });
 }
 
-// Fetch data every 10 seconds
+// Denata Fetch data every 10 seconds
 setInterval(fetchDataFromAWSIoT, 10000);
