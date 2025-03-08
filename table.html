@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Table - Water Management System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            text-align: center;
+        }
+        .header {
+            background: #007bff;
+            color: #fff;
+            padding: 20px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        table {
+            width: 80%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            background: #fff;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+        }
+        th {
+            background: #007bff;
+            color: #fff;
+        }
+        .navigation {
+            margin: 20px;
+        }
+        .navigation a {
+            text-decoration: none;
+            background: #007bff;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 5px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">Water Management System - Data Table</div>
+    
+    <div class="navigation">
+        <a href="index.html">Back to Dashboard</a>
+    </div>
+    
+    <table>
+        <tr>
+            <th>Date & Time</th>
+            <th>Rainfall (mm)</th>
+            <th>Wind Speed (km/h)</th>
+            <th>Wind Direction</th>
+            <th>Temperature (°C)</th>
+            <th>Humidity (%)</th>
+            <th>Water Level (m)</th>
+        </tr>
+        <tbody id="data-table">
+            <!-- Data will be inserted here dynamically -->
+        </tbody>
+    </table>
+    
+    <script>
+        function fetchTableData() {
+            // Placeholder: Replace with actual AWS IoT Core API call
+            const sampleData = {
+                timestamp: new Date().toLocaleString(),
+                rainfall: (Math.random() * 10).toFixed(2),
+                windSpeed: (Math.random() * 20).toFixed(2),
+                windDirection: ["N", "S", "E", "W"][Math.floor(Math.random() * 4)],
+                temperature: (Math.random() * 35).toFixed(2),
+                humidity: (Math.random() * 100).toFixed(2),
+                waterLevel: (Math.random() * 5).toFixed(2)
+            };
+            
+            const table = document.getElementById("data-table");
+            const row = `<tr>
+                <td>${sampleData.timestamp}</td>
+                <td>${sampleData.rainfall}</td>
+                <td>${sampleData.windSpeed}</td>
+                <td>${sampleData.windDirection}</td>
+                <td>${sampleData.temperature}</td>
+                <td>${sampleData.humidity}</td>
+                <td>${sampleData.waterLevel}</td>
+            </tr>`;
+            table.innerHTML = row + table.innerHTML;
+        }
+        
+        // Fetch data every 5 seconds (Replace with AWS IoT Core integration)
+        setInterval(fetchTableData, 5000);
+    </script>
+</body>
+</html>

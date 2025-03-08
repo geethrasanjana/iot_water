@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Water Management Dashboard</title>
+    <script src="https://sdk.amazonaws.com/js/aws-sdk-2.1030.0.min.js"></script>
+    <script src="aws-iot.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            text-align: center;
+        }
+        .header {
+            background: #007bff;
+            color: #fff;
+            padding: 20px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .top-info {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 20px;
+            font-size: 20px;
+        }
+        .top-info div {
+            padding: 10px;
+            background: #fff;
+            border-radius: 5px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+        .chart-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            margin: 20px;
+        }
+        .chart-box {
+            width: 45%;
+            background: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+        .button-container {
+            margin: 20px;
+        }
+        .button-container button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">Water Management System</div>
+    <div class="top-info">
+        <div>Temperature: <span id="temperature">--</span> °C</div>
+        <div>Humidity: <span id="humidity">--</span> %</div>
+    </div>
+    
+    <div class="button-container">
+        <button onclick="window.location.href='table.html'">View Table</button>
+    </div>
+    
+    <div class="chart-container">
+        <div class="chart-box"><canvas id="windSpeedChart"></canvas></div>
+        <div class="chart-box"><canvas id="windDirectionChart"></canvas></div>
+        <div class="chart-box"><canvas id="waterLevelChart"></canvas></div>
+        <div class="chart-box"><canvas id="rainfallChart"></canvas></div>
+        <div class="chart-box"><canvas id="predictedLevelsChart"></canvas></div>
+        <div class="chart-box"><canvas id="predictedReleasesChart"></canvas></div>
+    </div>
+    
+    <script>
+        const windSpeedCtx = document.getElementById('windSpeedChart').getContext('2d');
+        const windDirectionCtx = document.getElementById('windDirectionChart').getContext('2d');
+        const waterLevelCtx = document.getElementById('waterLevelChart').getContext('2d');
+        const rainfallCtx = document.getElementById('rainfallChart').getContext('2d');
+        const predictedLevelsCtx = document.getElementById('predictedLevelsChart').getContext('2d');
+        const predictedReleasesCtx = document.getElementById('predictedReleasesChart').getContext('2d');
+        
+        function createChart(ctx, label, color, type = 'line') {
+            return new Chart(ctx, {
+                type: type,
+                data: { labels: [], datasets: [{ label: label, borderColor: color, backgroundColor: color, data: [] }] },
+            });
+        }
+        
+        const windSpeedChart = createChart(windSpeedCtx, 'Wind Speed (km/h)', 'blue');
+        const windDirectionChart = createChart(windDirectionCtx, 'Wind Direction', 'green');
+        const waterLevelChart = createChart(waterLevelCtx, 'Water Level (m)', 'red');
+        const rainfallChart = createChart(rainfallCtx, 'Rainfall (mm)', 'purple');
+        const predictedLevelsChart = createChart(predictedLevelsCtx, 'Predicted Levels', 'orange', 'bar');
+        const predictedReleasesChart = createChart(predictedReleasesCtx, 'Predicted Releases', 'brown', 'bar');
+        
+        function fetchDataFromAWSIoT() {
+            const sampleData = {
+                timestamp: new Date().toLocaleTimeString(),
+                rainfall: (Math.random() * 10).toFixed(2),
+                windSpeed: (Math.random() * 20).toFixed(2),
+                windDirection: Math.random() * 360,
+                temperature: (Math.random() * 35).toFixed(2),
+                humidity: (Math.random() * 100).toFixed(2),
+                waterLevel: (Math.random() * 5).toFixed(2),
+                predictedLevels: (Math.random() * 5 + 1).toFixed(2),
+                predictedReleases: (Math.random() * 5 + 1).toFixed(2)
+            };
+            
+            document.getElementById("temperature").innerText = sampleData.temperature;
+            document.getElementById("humidity").innerText = sampleData.humidity;
+            
+            function updateChart(chart, value) {
+                if (chart.data.labels.length > 10) {
+                    chart.data.labels.shift();
+                    chart.data.datasets[0].data.shift();
+                }
+                chart.data.labels.push(sampleData.timestamp);
+                chart.data.datasets[0].data.push(value);
+                chart.update();
+            }
+            
+            updateChart(windSpeedChart, sampleData.windSpeed);
+            updateChart(windDirectionChart, sampleData.windDirection);
+            updateChart(waterLevelChart, sampleData.waterLevel);
+            updateChart(rainfallChart, sampleData.rainfall);
+            updateChart(predictedLevelsChart, sampleData.predictedLevels);
+            updateChart(predictedReleasesChart, sampleData.predictedReleases);
+        }
+        
+        setInterval(fetchDataFromAWSIoT, 10000);
+    </script>
+</body>
+</html>
